@@ -13,7 +13,12 @@ class EmergenciesController < ApplicationController
   end
 
   def show
-    @emergency = Emergency.find(params[:id])
+    @emergency = Emergency.find_by(code: params[:id])
+    if @emergency
+      render json: { emergency: @emergency }
+    else
+      render json: {}, status: 404
+    end
   end
 
   private
