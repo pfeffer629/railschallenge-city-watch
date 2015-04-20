@@ -1,0 +1,25 @@
+<%= form_for :emergency, url: emergencies_path do |f| %>
+  <p>
+    <%= f.label :code %><br>
+    <%= f.text_field :code %>
+  </p>
+ 
+  <p>
+    <%= f.label :fire_severity %><br>
+    <%= f.number_field :fire_severity %>
+  </p>
+
+  <p>
+    <%= f.label :police_severity %><br>
+    <%= f.number_field :police_severity %>
+  </p>
+
+  <p>
+    <%= f.label :medical_severity %><br>
+    <%= f.number_field :medical_severity %>
+  </p>
+ 
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>

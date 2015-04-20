@@ -43,6 +43,9 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
+    byebug (4.0.5)
+      columnize (= 0.9.0)
+    columnize (0.9.0)
     database_cleaner (1.4.1)
     debug_inspector (0.0.2)
     erubis (2.7.0)
@@ -131,6 +134,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  byebug
   database_cleaner (= 1.4.1)
   jbuilder (~> 2.0)
   minitest-rails (~> 2.1.1)
