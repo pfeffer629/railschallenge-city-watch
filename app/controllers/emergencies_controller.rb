@@ -2,6 +2,15 @@ class EmergenciesController < ApplicationController
   def new
   end
 
+  def index
+    @emergencies = Emergency.all
+    if @emergencies.empty?
+      render json: { emergencies: [] }
+    else
+      render json: { emergencies: @emergencies}, status: 200
+    end
+  end
+
   def create
     @emergency = Emergency.new(emergency_params)
     if @emergency.save
