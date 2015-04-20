@@ -1,4 +1,6 @@
 class EmergenciesController < ApplicationController
+  before_action :find_emergency, only: [:show, :update]
+
   def new
     page_not_found
   end
@@ -31,7 +33,6 @@ class EmergenciesController < ApplicationController
   end
 
   def show
-    @emergency = Emergency.find_by(code: params[:id])
     if @emergency
       render json: { emergency: @emergency }
     else
@@ -40,19 +41,25 @@ class EmergenciesController < ApplicationController
   end
 
   def update
-    @emergency = Emergency.find_by(code: params[:id])
-    @emergency.fire_severity = params['emergency']['fire_severity'].to_i
-    @emergency.police_severity = params['emergency']['police_severity'].to_i
-    @emergency.medical_severity = params['emergency']['medical_severity'].to_i
+    @emergency.update(
+      fire_severity: params['emergency']['fire_severity'].to_i,
+      police_severity: params['emergency']['police_severity'].to_i,
+      medical_severity: params['emergency']['medical_severity'].to_i
+    )
     render json: { emergency: @emergency }
   end
 
   private
-    def emergency_params
-      params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
-    end
 
-    def page_not_found
-      render json: { message: 'page not found' }, status: 404
-    end
+  def emergency_params
+    params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
+  end
+
+  def page_not_found
+    render json: { message: 'page not found' }, status: 404
+  end
+
+  def find_emergency
+    @emergency = Emergency.find_by(code: params[:id])
+  end
 end
