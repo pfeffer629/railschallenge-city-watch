@@ -27,6 +27,12 @@ class RespondersController < ApplicationController
     end
   end
 
+  def update
+    @responder = Responder.find_by(name: params[:id])
+    @responder.on_duty = params['responder']['on_duty']
+    render json: { responder: @responder }
+  end
+
   private
     def responder_params
       params.require(:responder).permit(:emergency_code, :type, :name, :capacity, :on_duty)
