@@ -1,4 +1,16 @@
 class EmergenciesController < ApplicationController
+  def new
+    page_not_found
+  end
+
+  def edit
+    page_not_found
+  end
+
+  def destroy
+    page_not_found
+  end
+
   def index
     @emergencies = Emergency.all
     if @emergencies.empty?
@@ -39,5 +51,9 @@ class EmergenciesController < ApplicationController
 
   def emergency_params
     params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
+  end
+
+  def page_not_found
+    render json: { message: 'page not found' }, status: 404
   end
 end
