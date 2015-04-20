@@ -17,6 +17,23 @@ class RespondersController < ApplicationController
     end
   end
 
+  def show
+    @responder = Responder.find_by(name: params[:id])
+    if @responder
+      render json: {
+        'responder' => {
+          'emergency_code' => @responder.emergency_code,
+          'type' => @responder.type,
+          'name' => @responder.name,
+          'capacity' => @responder.capacity,
+          'on_duty' => @responder.on_duty
+        }
+      }
+    else
+      render json: {}, status: 404
+    end
+  end
+
   private
     def responder_params
       params.require(:responder).permit(:emergency_code, :type, :name, :capacity, :on_duty)
