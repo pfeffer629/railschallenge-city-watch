@@ -1,4 +1,16 @@
 class RespondersController < ApplicationController
+  def new
+    page_not_found
+  end
+
+  def edit
+    page_not_found
+  end
+
+  def destroy
+    page_not_found
+  end
+
   def index
     @responders = Responder.all
     if @responders.empty?
@@ -36,5 +48,9 @@ class RespondersController < ApplicationController
   private
     def responder_params
       params.require(:responder).permit(:emergency_code, :type, :name, :capacity, :on_duty)
+    end
+
+    def page_not_found
+      render json: { message: 'page not found' }, status: 404
     end
 end
