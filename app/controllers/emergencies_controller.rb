@@ -16,7 +16,7 @@ class EmergenciesController < ApplicationController
     if @emergencies.empty?
       render json: { emergencies: [] }
     else
-      render json: { emergencies: @emergencies}, status: 200
+      render json: { emergencies: @emergencies }, status: 200
     end
   end
 
@@ -48,12 +48,11 @@ class EmergenciesController < ApplicationController
   end
 
   private
+    def emergency_params
+      params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
+    end
 
-  def emergency_params
-    params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
-  end
-
-  def page_not_found
-    render json: { message: 'page not found' }, status: 404
-  end
+    def page_not_found
+      render json: { message: 'page not found' }, status: 404
+    end
 end
