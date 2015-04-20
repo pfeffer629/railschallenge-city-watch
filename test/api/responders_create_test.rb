@@ -53,14 +53,14 @@ class RespondersCreateTest < ActionDispatch::IntegrationTest
     assert_equal({ 'message' => { 'capacity' => ['is not included in the list'] } }, JSON.parse(body))
   end
 
-  # test 'POST /responders/ name attribute must be unique' do
-  #   post '/responders', responder: { type: 'Fire', name: 'F-not-unique', capacity: 1 }
-  #   assert_equal 201, response.status
+  test 'POST /responders/ name attribute must be unique' do
+    post '/responders', responder: { type: 'Fire', name: 'F-not-unique', capacity: 1 }
+    assert_equal 201, response.status
 
-  #   post '/responders', responder: { type: 'Fire', name: 'F-not-unique', capacity: 1 }
-  #   assert_equal 422, response.status
-  #   assert_equal({ 'message' => { 'name' => ['has already been taken'] } }, JSON.parse(body))
-  # end
+    post '/responders', responder: { type: 'Fire', name: 'F-not-unique', capacity: 1 }
+    assert_equal 422, response.status
+    assert_equal({ 'message' => { 'name' => ['has already been taken'] } }, JSON.parse(body))
+  end
 
   # test 'POST /responders/ cannot set emergency_code' do
   #   post '/responders', responder: { emergency_code: 'E-1001', type: 'Fire', name: 'F-SET-EMG-ID', capacity: 1 }
@@ -83,46 +83,46 @@ class RespondersCreateTest < ActionDispatch::IntegrationTest
   #   assert_equal({ 'message' => 'found unpermitted parameter: on_duty' }, JSON.parse(body))
   # end
 
-  # test 'POST /responders/ lack of type returns an error' do
-  #   post '/responders', responder: { name: 'F-101', capacity: 1 }
+  test 'POST /responders/ lack of type returns an error' do
+    post '/responders', responder: { name: 'F-101', capacity: 1 }
 
-  #   assert_equal 422, response.status
-  #   assert_equal({ 'message' => { 'type' => ['can\'t be blank'] } }, JSON.parse(body))
-  # end
+    assert_equal 422, response.status
+    assert_equal({ 'message' => { 'type' => ['can\'t be blank'] } }, JSON.parse(body))
+  end
 
-  # test 'POST /responders/ lack of name returns an error' do
-  #   post '/responders', responder: { type: 'Fire', capacity: 1 }
+  test 'POST /responders/ lack of name returns an error' do
+    post '/responders', responder: { type: 'Fire', capacity: 1 }
 
-  #   assert_equal 422, response.status
-  #   assert_equal({ 'message' => { 'name' => ['can\'t be blank'] } }, JSON.parse(body))
-  # end
+    assert_equal 422, response.status
+    assert_equal({ 'message' => { 'name' => ['can\'t be blank'] } }, JSON.parse(body))
+  end
 
-  # test 'POST /responders/ lack of capacity returns an error' do
-  #   post '/responders', responder: { type: 'Fire', name: 'F-101' }
+  test 'POST /responders/ lack of capacity returns an error' do
+    post '/responders', responder: { type: 'Fire', name: 'F-101' }
 
-  #   assert_equal 422, response.status
-  #   assert_equal(
-  #     {
-  #       'message' => {
-  #         'capacity' => ['can\'t be blank', 'is not included in the list']
-  #       }
-  #     },
-  #     JSON.parse(body)
-  #   )
-  # end
+    assert_equal 422, response.status
+    assert_equal(
+      {
+        'message' => {
+          'capacity' => ['can\'t be blank', 'is not included in the list']
+        }
+      },
+      JSON.parse(body)
+    )
+  end
 
-  # test 'POST /responders/ lack of multiple required fields returns an error' do
-  #   post '/responders', responder: { type: 'Fire' }
+  test 'POST /responders/ lack of multiple required fields returns an error' do
+    post '/responders', responder: { type: 'Fire' }
 
-  #   assert_equal 422, response.status
-  #   assert_equal(
-  #     {
-  #       'message' => {
-  #         'name' => ['can\'t be blank'],
-  #         'capacity' => ['can\'t be blank', 'is not included in the list']
-  #       }
-  #     },
-  #     JSON.parse(body)
-  #   )
-  # end
+    assert_equal 422, response.status
+    assert_equal(
+      {
+        'message' => {
+          'name' => ['can\'t be blank'],
+          'capacity' => ['can\'t be blank', 'is not included in the list']
+        }
+      },
+      JSON.parse(body)
+    )
+  end
 end

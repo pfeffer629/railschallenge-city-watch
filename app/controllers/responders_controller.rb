@@ -11,9 +11,9 @@ class RespondersController < ApplicationController
           'on_duty' => @responder.on_duty
         }
       }, status: 201
-    # else
-    #   @errors = @responder.errors.messages
-    #   render json: { message: @errors }, status: 422
+    else
+      @errors = @responder.errors.messages
+      render json: { message: @errors }, status: 422
     end
   end
 

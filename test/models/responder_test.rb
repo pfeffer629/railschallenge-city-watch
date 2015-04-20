@@ -1,13 +1,13 @@
-require "test_helper"
+# require "test_helper"
 
-class ResponderTest < ActiveSupport::TestCase
+# class ResponderTest < ActiveSupport::TestCase
 
-  def responder
-    @responder ||= Responder.new
-  end
+#   def responder
+#     @responder ||= Responder.new
+#   end
 
-  def test_valid
-    assert responder.valid?
-  end
+#   def test_valid
+#     assert responder.valid?
+#   end
 
-end
+# end
