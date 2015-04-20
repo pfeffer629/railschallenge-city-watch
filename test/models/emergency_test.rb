@@ -1,13 +1,13 @@
-require "test_helper"
+# require "test_helper"
 
-class EmergencyTest < ActiveSupport::TestCase
+# class EmergencyTest < ActiveSupport::TestCase
 
-  def emergency
-    @emergency ||= Emergency.new
-  end
+#   def emergency
+#     @emergency ||= Emergency.new
+#   end
 
-  def test_valid
-    assert emergency.valid?
-  end
+#   def test_valid
+#     assert emergency.valid?
+#   end
 
-end
+# end

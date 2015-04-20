@@ -6,6 +6,9 @@ class EmergenciesController < ApplicationController
     @emergency = Emergency.new(emergency_params)
     if @emergency.save
       render json: { emergency: @emergency }, status: 201
+    else
+      @errors = @emergency.errors.messages
+      render json: { message: @errors }, status: 422
     end
   end
 
