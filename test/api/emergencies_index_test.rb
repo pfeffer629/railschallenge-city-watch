@@ -13,7 +13,6 @@ class EmergenciesIndexTest < ActionDispatch::IntegrationTest
 
     get '/emergencies/'
     assert_equal 200, response.status
-
     json_response = JSON.parse(body)
     assert_equal(json_response['emergencies'][0]['code'], 'E-00000001')
     assert_equal(json_response['emergencies'][0]['fire_severity'], 0)

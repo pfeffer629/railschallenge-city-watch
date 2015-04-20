@@ -1,16 +1,17 @@
 class RespondersController < ApplicationController
+  def index
+    @responders = Responder.all
+    if @responders.empty?
+      render json: { responders: [] }
+    else
+      render json: { responders: @responders }, status: 200
+    end
+  end
+
   def create
     @responder = Responder.new(responder_params)
     if @responder.save
-      render json: {
-        'responder' => {
-          'emergency_code' => @responder.emergency_code,
-          'type' => @responder.type,
-          'name' => @responder.name,
-          'capacity' => @responder.capacity,
-          'on_duty' => @responder.on_duty
-        }
-      }, status: 201
+      render json: { responder: @responder }, status: 201
     else
       @errors = @responder.errors.messages
       render json: { message: @errors }, status: 422
@@ -20,15 +21,7 @@ class RespondersController < ApplicationController
   def show
     @responder = Responder.find_by(name: params[:id])
     if @responder
-      render json: {
-        'responder' => {
-          'emergency_code' => @responder.emergency_code,
-          'type' => @responder.type,
-          'name' => @responder.name,
-          'capacity' => @responder.capacity,
-          'on_duty' => @responder.on_duty
-        }
-      }
+      render json: { responder: @responder }
     else
       render json: {}, status: 404
     end
