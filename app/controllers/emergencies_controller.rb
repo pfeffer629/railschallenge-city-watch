@@ -32,6 +32,7 @@ class EmergenciesController < ApplicationController
       @errors = @emergency.errors.messages
       render json: { message: @errors }, status: 422
     end
+    dispatch_responders
   end
 
   def show

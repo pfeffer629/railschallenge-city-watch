@@ -43,6 +43,7 @@ class RespondersCapacityTest < ActionDispatch::IntegrationTest
   #       }
   #     }, JSON.parse(body)
   #   )
+  # end
 
   #   patch '/emergencies/E-00000001', emergency: { resolved_at: Time.zone.now }
   #   get '/responders/?show=capacity'
@@ -56,8 +57,5 @@ class RespondersCapacityTest < ActionDispatch::IntegrationTest
   #     }, JSON.parse(body)
   #   )
   # end
-<<<<<<< HEAD
 end
-=======
-# end
->>>>>>> 1fefc500fbfdf2849ca2f8ed151ca5e4663b9ed2
+
