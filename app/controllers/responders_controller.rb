@@ -14,7 +14,12 @@ class RespondersController < ApplicationController
 
   def index
     @responders = Responder.all
+<<<<<<< HEAD
     if params
+=======
+
+    if params['show'] == 'capacity'
+>>>>>>> responders_capacity
       show_capacity
     elsif @responders.empty?
       render json: { responders: [] }
@@ -25,6 +30,7 @@ class RespondersController < ApplicationController
 
   def create
     @responder = Responder.new(create_responder_params)
+
     if @responder.save
       render json: { responder: @responder }, status: 201
     else
@@ -35,6 +41,7 @@ class RespondersController < ApplicationController
 
   def show
     @responder = Responder.find_by(name: params[:id])
+
     if @responder
       render json: { responder: @responder }
     else
@@ -66,6 +73,7 @@ class RespondersController < ApplicationController
   end
 
   def show_capacity
+<<<<<<< HEAD
     @capacity = { Fire: [0, 0, 0, 0],
       Police: [0, 0, 0, 0],
       Medical: [0, 0, 0, 0] }
@@ -94,4 +102,21 @@ class RespondersController < ApplicationController
       end
     end
     render json: { capacity: @capacity }
+=======
+    @capacity = {
+      'Fire' => [0, 0, 0, 0],
+      'Police' => [0, 0, 0, 0],
+      'Medical' => [0, 0, 0, 0]
+    }
+    @responders.each do |responder|
+      @capacity[responder.type][0] += responder.capacity
+      @capacity[responder.type][1] += responder.capacity
+      if responder.on_duty
+        @capacity[responder.type][2] += responder.capacity
+        @capacity[responder.type][3] += responder.capacity
+      end
+    end
+    render json: { capacity: @capacity }
+  end
+>>>>>>> responders_capacity
 end
