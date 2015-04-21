@@ -15,31 +15,31 @@ class RespondersUpdateTest < ActionDispatch::IntegrationTest
     assert_equal(true, JSON.parse(body)['responder']['on_duty'])
   end
 
-  # test 'PATCH /responders/:name cannot change emergency_code (it can only be set by the system)' do
-  #   patch '/responders/F-100', responder: { emergency_code: 'E-101' }
+  test 'PATCH /responders/:name cannot change emergency_code (it can only be set by the system)' do
+    patch '/responders/F-100', responder: { emergency_code: 'E-101' }
 
-  #   assert_equal 422, response.status
-  #   assert_equal({ 'message' => 'found unpermitted parameter: emergency_code' }, JSON.parse(body))
-  # end
+    assert_equal 422, response.status
+    assert_equal({ 'message' => 'found unpermitted parameter: emergency_code' }, JSON.parse(body))
+  end
 
-  # test 'PATCH /responders/:name cannot change type' do
-  #   patch '/responders/F-100', responder: { type: 'Police' }
+  test 'PATCH /responders/:name cannot change type' do
+    patch '/responders/F-100', responder: { type: 'Police' }
 
-  #   assert_equal 422, response.status
-  #   assert_equal({ 'message' => 'found unpermitted parameter: type' }, JSON.parse(body))
-  # end
+    assert_equal 422, response.status
+    assert_equal({ 'message' => 'found unpermitted parameter: type' }, JSON.parse(body))
+  end
 
-  # test 'PATCH /responders/:name cannot change name' do
-  #   patch '/responders/F-100', responder: { name: 'F-999' }
+  test 'PATCH /responders/:name cannot change name' do
+    patch '/responders/F-100', responder: { name: 'F-999' }
 
-  #   assert_equal 422, response.status
-  #   assert_equal({ 'message' => 'found unpermitted parameter: name' }, JSON.parse(body))
-  # end
+    assert_equal 422, response.status
+    assert_equal({ 'message' => 'found unpermitted parameter: name' }, JSON.parse(body))
+  end
 
-  # test 'PATCH /responders/:name cannot change capacity' do
-  #   patch '/responders/F-100', responder: { capacity: 7 }
+  test 'PATCH /responders/:name cannot change capacity' do
+    patch '/responders/F-100', responder: { capacity: 7 }
 
-  #   assert_equal 422, response.status
-  #   assert_equal({ 'message' => 'found unpermitted parameter: capacity' }, JSON.parse(body))
-  # end
+    assert_equal 422, response.status
+    assert_equal({ 'message' => 'found unpermitted parameter: capacity' }, JSON.parse(body))
+  end
 end

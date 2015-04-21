@@ -1,4 +1,8 @@
 class EmergenciesController < ApplicationController
+  before_action :page_not_found, only: [:new, :edit, :destroy]
+  before_action :find_emergency, only: [:show, :update]
+  rescue_from ActionController::UnpermittedParameters, with: :show_errors
+
   def new
     page_not_found
   end
@@ -21,7 +25,7 @@ class EmergenciesController < ApplicationController
   end
 
   def create
-    @emergency = Emergency.new(emergency_params)
+    @emergency = Emergency.new(create_emergency_params)
     if @emergency.save
       render json: { emergency: @emergency }, status: 201
     else
@@ -31,7 +35,6 @@ class EmergenciesController < ApplicationController
   end
 
   def show
-    @emergency = Emergency.find_by(code: params[:id])
     if @emergency
       render json: { emergency: @emergency }
     else
@@ -40,19 +43,25 @@ class EmergenciesController < ApplicationController
   end
 
   def update
-    @emergency = Emergency.find_by(code: params[:id])
-    @emergency.fire_severity = params['emergency']['fire_severity'].to_i
-    @emergency.police_severity = params['emergency']['police_severity'].to_i
-    @emergency.medical_severity = params['emergency']['medical_severity'].to_i
-    render json: { emergency: @emergency }
+    if @emergency.update(update_emergency_params)
+      render json: { emergency: @emergency }
+    else
+      @errors = @emergency.errors.messages
+      render json: { message: @errors }, status: 422
+    end
   end
 
   private
-    def emergency_params
-      params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
-    end
 
-    def page_not_found
-      render json: { message: 'page not found' }, status: 404
-    end
+  def create_emergency_params
+    params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
+  end
+
+  def update_emergency_params
+    params.require(:emergency).permit(:fire_severity, :police_severity, :medical_severity, :resolved_at)
+  end
+
+  def find_emergency
+    @emergency = Emergency.find_by(code: params[:id])
+  end
 end
