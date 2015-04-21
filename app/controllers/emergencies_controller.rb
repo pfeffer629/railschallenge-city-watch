@@ -46,7 +46,7 @@ class EmergenciesController < ApplicationController
       render json: { emergency: @emergency }
     else
       @errors = @emergency.errors.messages
-      render json: { message: @errors }, status:422
+      render json: { message: @errors }, status: 422
     end
   end
 
