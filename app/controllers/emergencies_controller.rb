@@ -56,16 +56,7 @@ class EmergenciesController < ApplicationController
     params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
   end
 
-  def page_not_found
-    render json: { message: 'page not found' }, status: 404
-  end
-
   def find_emergency
     @emergency = Emergency.find_by(code: params[:id])
-  end
-
-  def show_errors(exception)
-    @error = exception.message
-    render json: { message: @error }, status: 422
   end
 end
