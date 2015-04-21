@@ -24,7 +24,7 @@ class RespondersController < ApplicationController
   end
 
   def create
-    @responder = Responder.new(responder_params)
+    @responder = Responder.new(create_responder_params)
     if @responder.save
       render json: { responder: @responder }, status: 201
     else
@@ -43,15 +43,22 @@ class RespondersController < ApplicationController
   end
 
   def update
-    @responder = Responder.find_by(name: params[:id])
-    @responder.on_duty = params['responder']['on_duty']
-    render json: { responder: @responder }
+    if @responder.update(update_responder_params)
+      render json: { responder: @responder }
+    else
+      @errors = @responder.errors.messages
+      render json: { message: @errors }
+    end
   end
 
   private
 
-  def responder_params
+  def create_responder_params
     params.require(:responder).permit(:type, :name, :capacity)
+  end
+
+  def update_responder_params
+    params.require(:responder).permit(:on_duty)
   end
 
   def find_responder

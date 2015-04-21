@@ -8,7 +8,8 @@ class Emergency < ActiveRecord::Base
       code: code,
       fire_severity: fire_severity,
       police_severity: police_severity,
-      medical_severity: medical_severity
+      medical_severity: medical_severity,
+      resolved_at: resolved_at
     }
   end
 end
