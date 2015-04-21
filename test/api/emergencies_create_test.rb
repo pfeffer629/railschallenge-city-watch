@@ -45,11 +45,11 @@ class EmergenciesCreateTest < ActionDispatch::IntegrationTest
     assert_equal({ 'message' => { 'code' => ['has already been taken'] } }, JSON.parse(body))
   end
 
-  # test 'POST /emergencies/ cannot set id' do
-  #   post '/emergencies', emergency: { id: 1, fire_severity: 1, police_severity: 2, medical_severity: 3 }
-  #   assert_equal 422, response.status
-  #   assert_equal({ 'message' => 'found unpermitted parameter: id' }, JSON.parse(body))
-  # end
+  test 'POST /emergencies/ cannot set id' do
+    post '/emergencies', emergency: { id: 1, fire_severity: 1, police_severity: 2, medical_severity: 3 }
+    assert_equal 422, response.status
+    assert_equal({ 'message' => 'found unpermitted parameter: id' }, JSON.parse(body))
+  end
 
   test 'POST /emergencies/ cannot set resolved_at' do
     post '/emergencies',

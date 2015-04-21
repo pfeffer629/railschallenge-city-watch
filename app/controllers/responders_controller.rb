@@ -51,7 +51,7 @@ class RespondersController < ApplicationController
   private
 
   def responder_params
-    params.require(:responder).permit(:emergency_code, :type, :name, :capacity, :on_duty)
+    params.require(:responder).permit(:type, :name, :capacity)
   end
 
   def find_responder
