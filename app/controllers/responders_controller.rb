@@ -73,36 +73,6 @@ class RespondersController < ApplicationController
   end
 
   def show_capacity
-<<<<<<< HEAD
-    @capacity = { Fire: [0, 0, 0, 0],
-      Police: [0, 0, 0, 0],
-      Medical: [0, 0, 0, 0] }
-    @responders.each do |responder|
-      if responder.type == 'Fire'
-        @capacity[Fire][0] += 1
-        @capacity[Fire][1] += 1
-        if responder.on_duty
-          @capacity[Fire][2] += 1
-          @capacity[Fire][3] += 1
-        end
-      elsif responder.type == 'Police'
-        @capacity[Police][0] += 1
-        @capacity[Police][1] += 1
-        if responder.on_duty
-          @capacity[Police][2] += 1
-          @capacity[Police][3] += 1
-        end
-      else
-        @capacity[Medical][0] += 1
-        @capacity[Medical][1] += 1
-        if responder.on_duty
-          @capacity[Medical][2] += 1
-          @capacity[Medical][3] += 1
-        end
-      end
-    end
-    render json: { capacity: @capacity }
-=======
     @capacity = {
       'Fire' => [0, 0, 0, 0],
       'Police' => [0, 0, 0, 0],
@@ -118,5 +88,4 @@ class RespondersController < ApplicationController
     end
     render json: { capacity: @capacity }
   end
->>>>>>> responders_capacity
 end

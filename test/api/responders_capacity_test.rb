@@ -58,7 +58,3 @@ class RespondersCapacityTest < ActionDispatch::IntegrationTest
   #   )
   # end
 end
-<<<<<<< HEAD
-=======
-
->>>>>>> responders_capacity
