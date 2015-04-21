@@ -51,19 +51,19 @@ class EmergenciesCreateTest < ActionDispatch::IntegrationTest
   #   assert_equal({ 'message' => 'found unpermitted parameter: id' }, JSON.parse(body))
   # end
 
-#   test 'POST /emergencies/ cannot set resolved_at' do
-#     post '/emergencies',
-#          emergency: {
-#            resolved_at: Time.zone.now,
-#            code: 'E-55555555',
-#            fire_severity: 1,
-#            police_severity: 2,
-#            medical_severity: 3
-#          }
+  test 'POST /emergencies/ cannot set resolved_at' do
+    post '/emergencies',
+         emergency: {
+           resolved_at: Time.zone.now,
+           code: 'E-55555555',
+           fire_severity: 1,
+           police_severity: 2,
+           medical_severity: 3
+         }
 
-#     assert_equal 422, response.status
-#     assert_equal({ 'message' => 'found unpermitted parameter: resolved_at' }, JSON.parse(body))
-#   end
+    assert_equal 422, response.status
+    assert_equal({ 'message' => 'found unpermitted parameter: resolved_at' }, JSON.parse(body))
+  end
 
   test 'POST /emergencies/ lack of fire_severity returns an error' do
     post '/emergencies', emergency: { code: 'E-55555555', police_severity: 2, medical_severity: 3 }

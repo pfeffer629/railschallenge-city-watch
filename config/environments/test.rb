@@ -1,4 +1,5 @@
 Rails.application.configure do
+  config.action_controller.action_on_unpermitted_parameters = :raise
   config.cache_classes = true
   config.eager_load = false
   config.serve_static_files   = true

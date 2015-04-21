@@ -1,4 +1,7 @@
 class RespondersController < ApplicationController
+  before_action :find_emergency, only: [:show, :update]
+  rescue_from ActionController::UnpermittedParameters, with: :show_errors
+
   def new
     page_not_found
   end
@@ -53,5 +56,14 @@ class RespondersController < ApplicationController
 
   def page_not_found
     render json: { message: 'page not found' }, status: 404
+  end
+
+  def find_responder
+    @responder = Responder.find_by(name: params[:id])
+  end
+
+  def show_errors(exception)
+    @error = exception.message
+    render json: { message: @error }, status: 422
   end
 end

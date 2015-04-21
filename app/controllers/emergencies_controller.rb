@@ -1,5 +1,6 @@
 class EmergenciesController < ApplicationController
   before_action :find_emergency, only: [:show, :update]
+  rescue_from ActionController::UnpermittedParameters, with: :show_errors
 
   def new
     page_not_found
@@ -61,5 +62,10 @@ class EmergenciesController < ApplicationController
 
   def find_emergency
     @emergency = Emergency.find_by(code: params[:id])
+  end
+
+  def show_errors(exception)
+    @error = exception.message
+    render json: { message: @error }, status: 422
   end
 end
