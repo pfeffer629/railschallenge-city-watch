@@ -1,17 +1,15 @@
 class RespondersController < ApplicationController
+  before_action :page_not_found, only: [:new, :edit, :destroy]
   before_action :find_responder, only: [:show, :update]
   rescue_from ActionController::UnpermittedParameters, with: :show_errors
 
   def new
-    page_not_found
   end
 
   def edit
-    page_not_found
   end
 
   def destroy
-    page_not_found
   end
 
   def index

@@ -1,4 +1,5 @@
 class EmergenciesController < ApplicationController
+  before_action :page_not_found, only: [:new, :edit, :destroy]
   before_action :find_emergency, only: [:show, :update]
   rescue_from ActionController::UnpermittedParameters, with: :show_errors
 
