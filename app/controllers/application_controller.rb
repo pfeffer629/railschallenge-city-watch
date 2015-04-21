@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  before_action :page_not_found, only: [:new, :edit, :destroy]
+  
   private
 
   def page_not_found

@@ -13,8 +13,4 @@ class Responder < ActiveRecord::Base
       on_duty: on_duty
     }
   end
-
-  def dispatch_responders
-    
-  end
 end

@@ -1,18 +1,14 @@
 class EmergenciesController < ApplicationController
-  before_action :page_not_found, only: [:new, :edit, :destroy]
   before_action :find_emergency, only: [:show, :update]
   rescue_from ActionController::UnpermittedParameters, with: :show_errors
 
   def new
-    page_not_found
   end
 
   def edit
-    page_not_found
   end
 
   def destroy
-    page_not_found
   end
 
   def index
@@ -32,7 +28,6 @@ class EmergenciesController < ApplicationController
       @errors = @emergency.errors.messages
       render json: { message: @errors }, status: 422
     end
-    dispatch_responders
   end
 
   def show
