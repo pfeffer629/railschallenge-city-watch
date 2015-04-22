@@ -81,6 +81,6 @@ class RespondersController < ApplicationController
         @capacity[responder.type][3] += responder.capacity
       end
     end
-    render json: { capacity: @capacity }
+    render json: { capacity: Responder.all }
   end
 end

@@ -13,6 +13,7 @@ class EmergenciesController < ApplicationController
 
   def index
     @emergencies = Emergency.all
+
     if @emergencies.empty?
       render json: { emergencies: [] }
     else
@@ -22,6 +23,8 @@ class EmergenciesController < ApplicationController
 
   def create
     @emergency = Emergency.new(create_emergency_params)
+    dispatch_responders(@emergency)
+
     if @emergency.save
       render json: { emergency: @emergency }, status: 201
     else
@@ -59,5 +62,14 @@ class EmergenciesController < ApplicationController
 
   def find_emergency
     @emergency = Emergency.find_by(code: params[:id])
+  end
+
+  def dispatch_responders(emergency)
+    fire_severity = emergency.fire_severity
+    police_severity = emergency.police_severity
+    medical_severity = emergency.medical_severity
+
+    render json: { responder: }
+    # responders = Responder.where(type: "Fire").order(capacity: :desc)
   end
 end
