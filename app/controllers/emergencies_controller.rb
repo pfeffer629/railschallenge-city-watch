@@ -23,9 +23,9 @@ class EmergenciesController < ApplicationController
 
   def create
     @emergency = Emergency.new(create_emergency_params)
-    dispatch_responders(@emergency)
 
     if @emergency.save
+      # dispatch_responders(@emergency)
       render json: { emergency: @emergency }, status: 201
     else
       @errors = @emergency.errors.messages
@@ -64,12 +64,24 @@ class EmergenciesController < ApplicationController
     @emergency = Emergency.find_by(code: params[:id])
   end
 
-  def dispatch_responders(emergency)
-    fire_severity = emergency.fire_severity
-    police_severity = emergency.police_severity
-    medical_severity = emergency.medical_severity
+  # def dispatch_responders(emergency)
+  #   fire_severity = emergency.fire_severity
+  #   police_severity = emergency.police_severity
+  #   medical_severity = emergency.medical_severity
 
-    render json: { responder: }
-    # responders = Responder.where(type: "Fire").order(capacity: :desc)
-  end
+  #   responders = Responder.where(type: "Fire").order(capacity: :desc)
+  #   calculate_responders(responders, fire_severity)
+  # end
+
+  # def calculate_responders(responders, severity)
+  #   responders_hash = {}
+  #   @answer = {}
+  #   responders.each do |responder|
+  #     responders_hash[responder.name] = responder.capacity
+  #   end
+  #   if responders.key(severity)
+  #     @answer = { responders.key(severity): severity }
+  #   else
+  #   end
+  # end
 end

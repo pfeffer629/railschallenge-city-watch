@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150421021206) do
+ActiveRecord::Schema.define(version: 20150424012444) do
 
   create_table "emergencies", force: :cascade do |t|
     t.string   "code"
@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 20150421021206) do
     t.time     "resolved_at"
   end
 
+  add_index "emergencies", ["code"], name: "index_emergencies_on_code", unique: true
+
   create_table "responders", force: :cascade do |t|
     t.string   "emergency_code"
     t.string   "type"
@@ -32,5 +34,7 @@ ActiveRecord::Schema.define(version: 20150421021206) do
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
   end
+
+  add_index "responders", ["name"], name: "index_responders_on_name", unique: true
 
 end
