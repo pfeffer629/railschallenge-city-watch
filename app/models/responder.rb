@@ -6,11 +6,12 @@ class Responder < ActiveRecord::Base
   validates :type, :name, :capacity, presence: true
   validates :capacity, inclusion: { in: (1..5) }
 
+  private
+  
   def self.dispatch_responders(emergency)
-    responders = Responder.all
-    calculate_responders(emergency, "Fire", emergency.fire_severity)
-    calculate_responders(emergency, "Police", emergency.police_severity)
-    calculate_responders(emergency, "Medical", emergency.medical_severity)
+    calculate_responders(emergency, 'Fire', emergency.fire_severity)
+    calculate_responders(emergency, 'Police', emergency.police_severity)
+    calculate_responders(emergency, 'Medical', emergency.medical_severity)
   end
 
   def self.calculate_responders(emergency, type, severity)
@@ -24,9 +25,7 @@ class Responder < ActiveRecord::Base
   end
 
   def self.severity_0?(severity)
-    if severity == 0
-      return true
-    end
+    true if severity == 0
   end
 
   def self.single_responder?(emergency, type, severity)
@@ -34,10 +33,10 @@ class Responder < ActiveRecord::Base
     responders.each do |responder|
       if responder.capacity == severity
         emergency.responders << responder
-        return true
+        true
       end
     end
-    return false
+    false
   end
 
   def self.multiple_responders?(emergency, type, severity)
@@ -45,7 +44,7 @@ class Responder < ActiveRecord::Base
     best_total = 0
     allocation = []
 
-    for i in (0..responders.length)
+    responders.length.times do |i|
       possible_combinations = responders.combination(i).to_a
       possible_combinations.each do |combination|
         combination_total = 0

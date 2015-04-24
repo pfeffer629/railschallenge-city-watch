@@ -14,9 +14,7 @@ class RespondersController < ApplicationController
   def index
     @responders = Responder.all
 
-    # if params['show'] == 'capacity'
-      # show_capacity
-    render json: { responders: [] } if @responders.empty?      
+    render json: { responders: [] } if @responders.empty?
   end
 
   def create
@@ -55,22 +53,5 @@ class RespondersController < ApplicationController
 
   def find_responder
     @responder = Responder.find_by(name: params[:id])
-  end
-
-  def show_capacity
-    @capacity = {
-      'Fire' => [0, 0, 0, 0],
-      'Police' => [0, 0, 0, 0],
-      'Medical' => [0, 0, 0, 0]
-    }
-    @responders.each do |responder|
-      @capacity[responder.type][0] += responder.capacity
-      @capacity[responder.type][1] += responder.capacity
-      if responder.on_duty
-        @capacity[responder.type][2] += responder.capacity
-        @capacity[responder.type][3] += responder.capacity
-      end
-    end
-    render json: { capacity: Responder.all }
   end
 end
