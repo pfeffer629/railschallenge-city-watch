@@ -22,6 +22,10 @@ class EmergenciesController < ApplicationController
 
     if @emergency.save
       Responder.dispatch_responders(@emergency)
+      @responder_names = []
+      @emergency.responders.each do |responder|
+        @responder_names << responder.name
+      end
       render :show, status: 201
     else
       @errors = @emergency.errors.messages
