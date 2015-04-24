@@ -60,18 +60,18 @@ class RespondersController < ApplicationController
   end
 
   def display_capacity(responders)
-    @capacity = { 
+    @capacity = {
       'Fire' => [0, 0, 0, 0],
       'Police' => [0, 0, 0, 0],
-      'Medical' => [0, 0, 0,0]
+      'Medical' => [0, 0, 0, 0]
     }
     calculate_capacity(@capacity, responders)
-    return @capacity
+    @capacity
   end
 
   def calculate_capacity(capacity, responders)
     responders.each do |responder|
-      if responder.emergency_code == nil && responder.on_duty == true
+      if responder.emergency_code.nil? && responder.on_duty == true
         capacity["#{responder.type}"][3] += responder.capacity
         capacity["#{responder.type}"][2] += responder.capacity
         capacity["#{responder.type}"][1] += responder.capacity
@@ -79,7 +79,7 @@ class RespondersController < ApplicationController
       elsif responder.on_duty == true
         capacity["#{responder.type}"][2] += responder.capacity
         capacity["#{responder.type}"][0] += responder.capacity
-      elsif responder.emergency_code == nil
+      elsif responder.emergency_code.nil?
         capacity["#{responder.type}"][1] += responder.capacity
         capacity["#{responder.type}"][0] += responder.capacity
       else

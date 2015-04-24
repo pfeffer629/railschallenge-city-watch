@@ -45,9 +45,8 @@ class EmergenciesController < ApplicationController
 
   def update
     if @emergency.update(update_emergency_params)
-      if @emergency.resolved_at != nil
-        Emergency.resolve_emergency(@emergency)
-      end
+      Emergency.resolve_emergency(@emergency) unless @emergency.resolved_at.nil?
+
       render :show
     else
       @errors = @emergency.errors.messages
@@ -68,7 +67,6 @@ class EmergenciesController < ApplicationController
   def find_emergency
     @emergency = Emergency.find_by(code: params[:id])
   end
-
 
   def response_count
     enough_personnel = Emergency.where(full_response: true).count

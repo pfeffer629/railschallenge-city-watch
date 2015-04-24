@@ -6,8 +6,6 @@ class Responder < ActiveRecord::Base
   validates :type, :name, :capacity, presence: true
   validates :capacity, inclusion: { in: (1..5) }
 
-  private
-  
   def self.dispatch_responders(emergency)
     allocate_responders(emergency, 'Fire', emergency.fire_severity)
     allocate_responders(emergency, 'Police', emergency.police_severity)
@@ -19,7 +17,7 @@ class Responder < ActiveRecord::Base
       return
     elsif single_responder?(emergency, type, severity)
       return
-    else 
+    else
       multiple_responders?(emergency, type, severity)
     end
   end
@@ -40,65 +38,75 @@ class Responder < ActiveRecord::Base
   end
 
   def self.multiple_responders?(emergency, type, severity)
-    # find all responders available to respond to emergency
     responders = Responder.where(type: type, on_duty: true).order(capacity: :desc)
-    # counter to find current best allocation of responders
-    best_total = 0
-    # array to store possible allocation of responders
-    allocation = []
+
+    if send_all_responders?(emergency, responders, severity)
+      return
+    else
+      calculate_allocation(responders, severity)
+      emergency.responders.push(*@allocation)
+    end
+  end
+
+  def self.send_all_responders?(emergency, responders, severity)
+    total = 0
 
     # if severity > total capacity, send all responders
     responders.each do |responder|
-      best_total += responder.capacity
+      total += responder.capacity
     end
 
-    # send all responders if capcity = severity
-    if best_total == severity
-      emergency.responders.push(*responders)
-    end
     # send all responders if capacity < severity
-    if best_total < severity
+    if total < severity
       emergency.update(full_response: false)
       emergency.responders.push(*responders)
-    end
-    # send all responders if only 1 responder
-    if responders.length == 1
+      return true
+    # send all responders if capcity = severity
+    elsif total == severity
+      emergency.responders.push(*responders)
+      return true
+    elsif responders.length == 1
+      # send all responders if only 1 responder
       emergency.responders.push(responders.first)
+      return true
+    else
+      return false
     end
+  end
+
+  def self.calculate_allocation(responders, severity)
+    @best_total = 0
+    @allocation = []
 
     # find all possible responder combinations
     responders.length.times do |i|
       possible_combinations = responders.combination(i + 1).to_a
       possible_combinations.each do |combination|
-        combination_total = 0
-        # find total of each combination
-        combination.each do |responder|
-          combination_total += responder.capacity
-        end
-        # find combination that is equal to severity
-        if combination_total == severity
-          allocation = combination
-          break
-        end
-        # find highest combination that is lower than severity
-        if best_total < severity
-          if combination_total > best_total
-            best_total = combination_total
-            allocation = combination
-          end
-        end
-        # find lowest combination that is higher than severity
-        if combination_total > severity
-          if combination_total < best_total
-            best_total = combination_total
-            allocation = combination
-          end
-        end
+        find_combination_total(combination)
+        find_optimal_allocation(combination, @combination_total, severity)
       end
-      # set emergency responders equal to best found allocation
     end
-    allocation.each do |responder|
-      emergency.responders << responder
+  end
+
+  def self.find_combination_total(combination)
+    # find total of each combination
+    @combination_total = 0
+    combination.each do |responder|
+      @combination_total += responder.capacity
+    end
+    @combination_total
+  end
+
+  def self.find_optimal_allocation(combination, total, severity)
+    # find combination that is equal to severity
+    if total == severity
+      @allocation = combination
+      return @allocation
+    end
+    # find lowest combination that is higher than severity
+    if total > severity && total < @best_total
+      @best_total = total
+      @allocation = combination
     end
   end
 end
