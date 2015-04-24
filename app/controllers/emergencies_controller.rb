@@ -14,19 +14,15 @@ class EmergenciesController < ApplicationController
   def index
     @emergencies = Emergency.all
 
-    if @emergencies.empty?
-      render json: { emergencies: [] }
-    else
-      render json: { emergencies: @emergencies }, status: 200
-    end
+    render json: { emergencies: [] } if @emergencies.empty?
   end
 
   def create
     @emergency = Emergency.new(create_emergency_params)
 
     if @emergency.save
-      # dispatch_responders(@emergency)
-      render json: { emergency: @emergency }, status: 201
+      Responder.dispatch_responders(@emergency)
+      render :show, status: 201
     else
       @errors = @emergency.errors.messages
       render json: { message: @errors }, status: 422
@@ -34,16 +30,12 @@ class EmergenciesController < ApplicationController
   end
 
   def show
-    if @emergency
-      render json: { emergency: @emergency }
-    else
-      render json: {}, status: 404
-    end
+    render json: {}, status: 404 if @emergency.nil?
   end
 
   def update
     if @emergency.update(update_emergency_params)
-      render json: { emergency: @emergency }
+      render :show
     else
       @errors = @emergency.errors.messages
       render json: { message: @errors }, status: 422
@@ -63,25 +55,4 @@ class EmergenciesController < ApplicationController
   def find_emergency
     @emergency = Emergency.find_by(code: params[:id])
   end
-
-  # def dispatch_responders(emergency)
-  #   fire_severity = emergency.fire_severity
-  #   police_severity = emergency.police_severity
-  #   medical_severity = emergency.medical_severity
-
-  #   responders = Responder.where(type: "Fire").order(capacity: :desc)
-  #   calculate_responders(responders, fire_severity)
-  # end
-
-  # def calculate_responders(responders, severity)
-  #   responders_hash = {}
-  #   @answer = {}
-  #   responders.each do |responder|
-  #     responders_hash[responder.name] = responder.capacity
-  #   end
-  #   if responders.key(severity)
-  #     @answer = { responders.key(severity): severity }
-  #   else
-  #   end
-  # end
 end
