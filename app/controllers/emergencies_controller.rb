@@ -39,6 +39,9 @@ class EmergenciesController < ApplicationController
 
   def update
     if @emergency.update(update_emergency_params)
+      if @emergency.resolved_at != nil
+        Responder.resolve_emergency(@emergency)
+      end
       render :show
     else
       @errors = @emergency.errors.messages
