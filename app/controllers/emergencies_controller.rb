@@ -13,6 +13,7 @@ class EmergenciesController < ApplicationController
 
   def index
     @emergencies = Emergency.all
+    response_count
 
     render json: { emergencies: [] } if @emergencies.empty?
   end
@@ -22,6 +23,11 @@ class EmergenciesController < ApplicationController
 
     if @emergency.save
       Responder.dispatch_responders(@emergency)
+      if @emergency.full_response
+        response_count
+        response_message(@response_count)
+      end
+
       @responder_names = []
       @emergency.responders.each do |responder|
         @responder_names << responder.name
@@ -40,7 +46,7 @@ class EmergenciesController < ApplicationController
   def update
     if @emergency.update(update_emergency_params)
       if @emergency.resolved_at != nil
-        Responder.resolve_emergency(@emergency)
+        Emergency.resolve_emergency(@emergency)
       end
       render :show
     else
@@ -61,5 +67,16 @@ class EmergenciesController < ApplicationController
 
   def find_emergency
     @emergency = Emergency.find_by(code: params[:id])
+  end
+
+
+  def response_count
+    enough_personnel = Emergency.where(full_response: true).count
+    total_emergencies = Emergency.all.count
+    @response_count = [enough_personnel, total_emergencies]
+  end
+
+  def response_message(response_count)
+    @full_response = "#{response_count[0]} out of #{response_count[1]} had enough personnel."
   end
 end

@@ -5,4 +5,5 @@ json.emergency do
   json.police_severity @emergency.police_severity
   json.resolved_at @emergency.resolved_at
   json.responders @responder_names
+  json.full_response @full_response
 end

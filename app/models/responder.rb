@@ -19,7 +19,7 @@ class Responder < ActiveRecord::Base
       return
     elsif single_responder?(emergency, type, severity)
       return
-    else
+    else 
       multiple_responders?(emergency, type, severity)
     end
   end
@@ -52,10 +52,17 @@ class Responder < ActiveRecord::Base
       best_total += responder.capacity
     end
 
-    # send all responders if only 1 or not enough responders
-    if best_total <= severity
+    # send all responders if capcity = severity
+    if best_total == severity
       emergency.responders.push(*responders)
-    elsif responders.length == 1
+    end
+    # send all responders if capacity < severity
+    if best_total < severity
+      emergency.update(full_response: false)
+      emergency.responders.push(*responders)
+    end
+    # send all responders if only 1 responder
+    if responders.length == 1
       emergency.responders.push(responders.first)
     end
 
@@ -93,9 +100,5 @@ class Responder < ActiveRecord::Base
     allocation.each do |responder|
       emergency.responders << responder
     end
-  end
-
-  def self.resolve_emergency(emergency)
-    emergency.responders.clear
   end
 end
