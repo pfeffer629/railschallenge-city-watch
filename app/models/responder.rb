@@ -33,7 +33,7 @@ class Responder < ActiveRecord::Base
     responders.each do |responder|
       if responder.capacity == severity
         emergency.responders << responder
-        true
+        return true
       end
     end
     false
@@ -44,6 +44,13 @@ class Responder < ActiveRecord::Base
     best_total = 0
     allocation = []
 
+    responders.each do |responder|
+      best_total += responder.capacity
+    end
+    if best_total <= severity
+      emergency.responders.push(*responders)
+    end
+
     responders.length.times do |i|
       possible_combinations = responders.combination(i).to_a
       possible_combinations.each do |combination|
@@ -52,17 +59,17 @@ class Responder < ActiveRecord::Base
           combination_total += responder.capacity
         end
         if best_total == severity
-          allocation << combination
+          allocation = combination
           break
         elsif best_total < severity
           if combination_total > best_total
             best_total = combination_total
-            allocation << combination
+            allocation = combination
           end
         else
           if combination_total < best_total
             best_total = combination_total
-            allocation << combination
+            allocation = combination
           end
         end
         allocation.each do |responder|

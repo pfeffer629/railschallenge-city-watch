@@ -29,12 +29,14 @@ class RespondersController < ApplicationController
   end
 
   def show
+    if params[:show] == 'capacity'
+    end
     render json: {}, status: 404 if @responder.nil?
   end
 
   def update
     if @responder.update(update_responder_params)
-      render json: { responder: @responder }
+      render :show
     else
       @errors = @responder.errors.messages
       render json: { message: @errors }
