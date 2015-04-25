@@ -14,7 +14,7 @@ class RespondersController < ApplicationController
   def index
     @responders = Responder.all
     if params[:show] == 'capacity'
-      display_capacity(@responders)
+      display_capacity
       render json: { capacity: @capacity }
     end
 
@@ -59,32 +59,52 @@ class RespondersController < ApplicationController
     @responder = Responder.find_by(name: params[:id])
   end
 
-  def display_capacity(responders)
+  def display_capacity
     @capacity = {
       'Fire' => [0, 0, 0, 0],
       'Police' => [0, 0, 0, 0],
       'Medical' => [0, 0, 0, 0]
     }
-    calculate_capacity(@capacity, responders)
+    calculate_capacity
     @capacity
   end
 
-  def calculate_capacity(capacity, responders)
-    responders.each do |responder|
-      if responder.emergency_code.nil? && responder.on_duty == true
-        capacity["#{responder.type}"][3] += responder.capacity
-        capacity["#{responder.type}"][2] += responder.capacity
-        capacity["#{responder.type}"][1] += responder.capacity
-        capacity["#{responder.type}"][0] += responder.capacity
-      elsif responder.on_duty == true
-        capacity["#{responder.type}"][2] += responder.capacity
-        capacity["#{responder.type}"][0] += responder.capacity
-      elsif responder.emergency_code.nil?
-        capacity["#{responder.type}"][1] += responder.capacity
-        capacity["#{responder.type}"][0] += responder.capacity
-      else
-        capacity["#{responder.type}"][0] += responder.capacity
-      end
+  def calculate_capacity
+    @responders.each do |responder|
+      next if responder_ready?(responder)
+      next if responder_on_duty?(responder)
+      next if responder_available?(responder)
+      responder_total?(responder)
     end
+  end
+
+  def responder_ready?(responder)
+    if responder.emergency_code.nil? && responder.on_duty == true
+      @capacity["#{responder.type}"].map! { |total| total + responder.capacity }
+      return true
+    end
+    false
+  end
+
+  def responder_on_duty?(responder)
+    if responder.on_duty == true
+      @capacity["#{responder.type}"][2] += responder.capacity
+      @capacity["#{responder.type}"][0] += responder.capacity
+      return true
+    end
+    false
+  end
+
+  def responder_available?(responder)
+    if responder.emergency_code.nil?
+      @capacity["#{responder.type}"][1] += responder.capacity
+      @capacity["#{responder.type}"][0] += responder.capacity
+      return true
+    end
+    false
+  end
+
+  def responder_total?(responder)
+    @capacity["#{responder.type}"][0] += responder.capacity
   end
 end
