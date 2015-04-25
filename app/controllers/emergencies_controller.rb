@@ -72,7 +72,7 @@ class EmergenciesController < ApplicationController
   end
 
   def response_message
-    @full_response = "#{@response_count[0]} out of #{@response_count[1]} had enough personnel."
+    @full_response = "#{@response_count[0]} out of #{@response_count[1]} emergencies had enough personnel."
   end
 
   def responder_names(emergency)
