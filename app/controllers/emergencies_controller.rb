@@ -25,9 +25,9 @@ class EmergenciesController < ApplicationController
       Responder.dispatch_responders(@emergency)
       if @emergency.full_response
         response_count
-        response_message(@response_count)
+        response_message
       end
-      store_responder_names(@emergency)
+      responder_names(@emergency)
 
       render :show, status: 201
     else
@@ -71,11 +71,11 @@ class EmergenciesController < ApplicationController
     @response_count = [enough_personnel, total_emergencies]
   end
 
-  def response_message(response_count)
-    @full_response = "#{response_count[0]} out of #{response_count[1]} had enough personnel."
+  def response_message
+    @full_response = "#{@response_count[0]} out of #{@response_count[1]} had enough personnel."
   end
 
-  def store_responder_names(emergency)
+  def responder_names(emergency)
     @responder_names = []
     emergency.responders.each do |responder|
       @responder_names << responder.name
