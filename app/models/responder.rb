@@ -14,75 +14,31 @@ class Responder < ActiveRecord::Base
 
   def self.allocate_responders(emergency, type, severity)
     find_responders_of_type(type)
-    # dispatch no responders if severity == 0
-    if severity_0?(severity)
-      return
-    # dispatch single responder if responder capacity == 0
-    # or if only 1 responder available
-    elsif dispatch_single_responder?(emergency, severity)
-      return
-    # dispatch responders if multiple responders available,
-    else
-      dispatch_multiple_responders(emergency, severity)
-    end
+    return if severity == 0
+    return if send_all_responders?(emergency, severity)
+    return if dispatch_single_responder?(emergency, severity)
+    dispatch_multiple_responders(emergency, severity)
   end
 
   def self.find_responders_of_type(type)
     @responders = Responder.where(type: type, on_duty: true).order(capacity: :asc)
   end
 
-  def self.severity_0?(severity)
-    true if severity == 0
+  def self.send_all_responders?(emergency, severity)
+    max_capacity = @responders.sum(:capacity)
+
+    emergency.responders.push(*@responders) if max_capacity <= severity
+    emergency.update(full_response: false) if max_capacity < severity
   end
 
   def self.dispatch_single_responder?(emergency, severity)
-    if @responders.length == 1
-      emergency.responders << @responders.first
-    else
-      @responders.each do |responder|
-        if responder.capacity == severity
-          emergency.responders << responder
-          return true
-        end
-      end
-    end
-    false
+    emergency.responders << @responders.first if @responders.length == 1
+    emergency.responders << @responders.find_by(capacity: severity) if !@responders.find_by(capacity: severity).nil?
   end
 
   def self.dispatch_multiple_responders(emergency, severity)
-    # if total capacity of responders <= severity
-    # send all responders
-    if send_all_responders?(emergency, severity)
-      return
-    else
-      calculate_allocation(severity)
-      emergency.responders.push(*@allocation)
-    end
-  end
-
-  def self.send_all_responders?(emergency, severity)
-    max_capacity = calculate_max_capacity(@responders)
-
-    # send all responders if capacity < severity
-    if max_capacity < severity
-      emergency.update(full_response: false)
-      emergency.responders.push(*@responders)
-      return true
-    # send all responders if capcity == severity
-    elsif max_capacity == severity
-      emergency.responders.push(*@responders)
-      return true
-    else
-      return false
-    end
-  end
-
-  def self.calculate_max_capacity(responders)
-    max_capacity = 0
-    responders.each do |responder|
-      max_capacity += responder.capacity
-    end
-    max_capacity
+    calculate_allocation(severity)
+    emergency.responders.push(*@allocation)
   end
 
   def self.calculate_allocation(severity)
@@ -101,7 +57,8 @@ class Responder < ActiveRecord::Base
 
   def self.find_combination_total(combination)
     # find total of each combination
-    @combination_capacity = calculate_max_capacity(combination)
+    @combination_capacity = 0
+    combination.map{ |responder| @combination_capacity += responder.capacity }
     @combination_capacity
   end
 
