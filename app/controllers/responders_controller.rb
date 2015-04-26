@@ -13,10 +13,7 @@ class RespondersController < ApplicationController
 
   def index
     @responders = Responder.all
-    if params[:show] == 'capacity'
-      display_capacity
-      render json: { capacity: @capacity }
-    end
+    return render json: { capacity: Capacity.display_capacity } if params[:show] == 'capacity'
 
     render json: { responders: [] } if @responders.empty?
   end
@@ -57,54 +54,5 @@ class RespondersController < ApplicationController
 
   def find_responder
     @responder = Responder.find_by(name: params[:id])
-  end
-
-  def display_capacity
-    @capacity = {
-      'Fire' => [0, 0, 0, 0],
-      'Police' => [0, 0, 0, 0],
-      'Medical' => [0, 0, 0, 0]
-    }
-    calculate_capacity
-    @capacity
-  end
-
-  def calculate_capacity
-    @responders.each do |responder|
-      next if responder_ready?(responder)
-      next if responder_on_duty?(responder)
-      next if responder_available?(responder)
-      responder_total?(responder)
-    end
-  end
-
-  def responder_ready?(responder)
-    if responder.emergency_code.nil? && responder.on_duty == true
-      @capacity["#{responder.type}"].map! { |total| total + responder.capacity }
-      return true
-    end
-    false
-  end
-
-  def responder_on_duty?(responder)
-    if responder.on_duty == true
-      @capacity["#{responder.type}"][2] += responder.capacity
-      @capacity["#{responder.type}"][0] += responder.capacity
-      return true
-    end
-    false
-  end
-
-  def responder_available?(responder)
-    if responder.emergency_code.nil?
-      @capacity["#{responder.type}"][1] += responder.capacity
-      @capacity["#{responder.type}"][0] += responder.capacity
-      return true
-    end
-    false
-  end
-
-  def responder_total?(responder)
-    @capacity["#{responder.type}"][0] += responder.capacity
   end
 end

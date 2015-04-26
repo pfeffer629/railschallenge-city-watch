@@ -13,27 +13,21 @@ class EmergenciesController < ApplicationController
 
   def index
     @emergencies = Emergency.all
-    response_count
+    @response_count = Response.response_count
 
     render json: { emergencies: [] } if @emergencies.empty?
   end
 
   def create
-    @emergency = Emergency.new(params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity))
+    @emergency = Emergency.new(create_emergency_params)
 
-    if @emergency.save
-      Responder.dispatch_responders(@emergency)
-      if @emergency.full_response
-        response_count
-        response_message
-      end
-      responder_names(@emergency)
+    return render json: { message: @emergency.errors.messages }, status: 422 unless @emergency.save
 
-      render :show, status: 201
-    else
-      @errors = @emergency.errors.messages
-      render json: { message: @errors }, status: 422
-    end
+    Responder.dispatch_responders(@emergency)
+    @full_response = Response.response_message if @emergency.full_response
+    @responder_names = Response.responder_names(@emergency)
+
+    render :show, status: 201
   end
 
   def show
@@ -41,7 +35,7 @@ class EmergenciesController < ApplicationController
   end
 
   def update
-    if @emergency.update(params.require(:emergency).permit(:fire_severity, :police_severity, :medical_severity, :resolved_at))
+    if @emergency.update(update_emergency_params)
       Emergency.resolve_emergency(@emergency) unless @emergency.resolved_at.nil?
 
       render :show
@@ -52,25 +46,16 @@ class EmergenciesController < ApplicationController
   end
 
   private
-  
+
+  def create_emergency_params
+    params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
+  end
+
+  def update_emergency_params
+    params.require(:emergency).permit(:fire_severity, :police_severity, :medical_severity, :resolved_at)
+  end
+
   def find_emergency
     @emergency = Emergency.find_by(code: params[:id])
-  end
-
-  def response_count
-    enough_personnel = Emergency.where(full_response: true).count
-    total_emergencies = Emergency.all.count
-    @response_count = [enough_personnel, total_emergencies]
-  end
-
-  def response_message
-    @full_response = "#{@response_count[0]} out of #{@response_count[1]} emergencies had enough personnel."
-  end
-
-  def responder_names(emergency)
-    @responder_names = []
-    emergency.responders.each do |responder|
-      @responder_names << responder.name
-    end
   end
 end
