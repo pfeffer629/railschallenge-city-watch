@@ -36,7 +36,7 @@ class EmergenciesController < ApplicationController
 
   def update
     if @emergency.update(update_emergency_params)
-      Emergency.resolve_emergency(@emergency) unless @emergency.resolved_at.nil?
+      Emergency.resolve_emergency(@emergency) if @emergency.resolved_at?
 
       render :show
     else

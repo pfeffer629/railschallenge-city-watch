@@ -19,20 +19,20 @@ class Capacity
   end
 
   def self.responder_ready?(responder)
-    if responder.emergency_code.nil? && responder.on_duty == true
+    if !responder.emergency_code? && responder.on_duty == true
       @capacity["#{responder.type}"].map! { |total| total + responder.capacity }
     end
   end
 
   def self.responder_on_duty?(responder)
-    if responder.on_duty == true
+    if responder.on_duty
       @capacity["#{responder.type}"][2] += responder.capacity
       @capacity["#{responder.type}"][0] += responder.capacity
     end
   end
 
   def self.responder_available?(responder)
-    if responder.emergency_code.nil?
+    unless responder.emergency_code?
       @capacity["#{responder.type}"][1] += responder.capacity
       @capacity["#{responder.type}"][0] += responder.capacity
     end
