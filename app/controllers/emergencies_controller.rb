@@ -25,7 +25,7 @@ class EmergenciesController < ApplicationController
 
     Dispatcher.dispatch_responders(@emergency)
     @full_response = Response.response_message if @emergency.full_response
-    @responder_names = Response.responder_names(@emergency)
+    @responder_names = @emergency.responders.pluck(:name)
 
     render :show, status: 201
   end

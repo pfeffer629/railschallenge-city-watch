@@ -8,8 +8,4 @@ class Response
   def self.response_message
     "#{response_count[0]} out of #{response_count[1]} emergencies had enough personnel."
   end
-
-  def self.responder_names(emergency)
-    emergency.responders.pluck(:name)
-  end
 end
