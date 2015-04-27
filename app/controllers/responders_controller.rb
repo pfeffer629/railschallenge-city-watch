@@ -30,7 +30,7 @@ class RespondersController < ApplicationController
   end
 
   def show
-    render json: {}, status: 404 if @responder.nil?
+    render json: {}, status: 404 unless @responder
   end
 
   def update

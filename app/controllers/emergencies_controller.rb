@@ -31,7 +31,7 @@ class EmergenciesController < ApplicationController
   end
 
   def show
-    render json: {}, status: 404 if @emergency.nil?
+    render json: {}, status: 404 unless @emergency
   end
 
   def update

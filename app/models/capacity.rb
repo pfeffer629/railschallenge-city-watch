@@ -5,40 +5,23 @@ class Capacity
       'Police' => [0, 0, 0, 0],
       'Medical' => [0, 0, 0, 0]
     }
-    calculate_capacity
+    Responder.find_each do |responder|
+      calculate_capacity(responder)
+      @capacity["#{responder.type}"][0] += responder.capacity
+    end
     @capacity
   end
 
-  def self.calculate_capacity
-    Responder.find_each do |responder|
-      next if responder_ready?(responder)
-      next if responder_on_duty?(responder)
-      next if responder_available?(responder)
-      responder_total?(responder)
-    end
+  def self.calculate_capacity(responder)
+    return if responder_ready?(responder)
+    return @capacity["#{responder.type}"][2] += responder.capacity if responder.on_duty?
+    return @capacity["#{responder.type}"][1] += responder.capacity unless responder.emergency_code?
   end
 
   def self.responder_ready?(responder)
     if !responder.emergency_code? && responder.on_duty == true
       @capacity["#{responder.type}"].map! { |total| total + responder.capacity }
+      @capacity["#{responder.type}"][0] -= responder.capacity
     end
-  end
-
-  def self.responder_on_duty?(responder)
-    if responder.on_duty
-      @capacity["#{responder.type}"][2] += responder.capacity
-      @capacity["#{responder.type}"][0] += responder.capacity
-    end
-  end
-
-  def self.responder_available?(responder)
-    unless responder.emergency_code?
-      @capacity["#{responder.type}"][1] += responder.capacity
-      @capacity["#{responder.type}"][0] += responder.capacity
-    end
-  end
-
-  def self.responder_total?(responder)
-    @capacity["#{responder.type}"][0] += responder.capacity
   end
 end
