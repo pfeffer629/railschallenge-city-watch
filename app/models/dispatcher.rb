@@ -35,8 +35,8 @@ class Dispatcher
     @allocation = []
 
     # find all possible responder combinations
-    @responders.length.times do |i|
-      possible_combinations = @responders.combination(i + 1).to_a
+    @responders.length.times do |combination_size|
+      possible_combinations = @responders.combination(combination_size + 1).to_a
       possible_combinations.each do |combination|
         find_combination_capacity(combination)
         break if equivalent_combination(combination, severity)
