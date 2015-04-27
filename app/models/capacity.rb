@@ -14,7 +14,7 @@ class Capacity
   end
 
   def self.calculate_capacity(responder)
-    return if responder_ready?(responder)
+    return @capacity_type[0] -= responder.capacity if responder_ready?(responder)
     return @capacity_type[2] += responder.capacity if responder.on_duty?
     return @capacity_type[1] += responder.capacity unless responder.emergency_code?
   end
@@ -22,7 +22,6 @@ class Capacity
   def self.responder_ready?(responder)
     if !responder.emergency_code? && responder.on_duty == true
       @capacity_type.map! { |total| total + responder.capacity }
-      @capacity_type[0] -= responder.capacity
     end
   end
 end
