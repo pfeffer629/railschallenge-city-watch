@@ -24,7 +24,7 @@ class EmergenciesController < ApplicationController
     return render json: { message: @emergency.errors.messages }, status: 422 unless @emergency.save
 
     Dispatcher.dispatch_responders(@emergency)
-    @full_response = Response.response_message if @emergency.full_response
+    @full_response = Response.response_message(@emergency)
     @responder_names = @emergency.responders.pluck(:name)
 
     render :show, status: 201
