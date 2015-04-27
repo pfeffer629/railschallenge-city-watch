@@ -6,6 +6,8 @@ class Response
   end
 
   def self.response_message(emergency)
-    return "#{response_count[0]} out of #{response_count[1]} emergencies had enough personnel." if emergency.full_response?
+    if emergency.full_response?
+      "#{response_count[0]} out of #{response_count[1]} emergencies had enough personnel."
+    end
   end
 end
